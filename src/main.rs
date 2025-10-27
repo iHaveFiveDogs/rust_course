@@ -1,11 +1,27 @@
-use axum::{routing::get, Router};
+// src/main.rs
+use dotenvy::dotenv;
 use std::net::SocketAddr;
+
+
+use axum_server::make_app; // crate name as in Cargo.toml
 
 #[tokio::main]
 async fn main() {
-    let app = Router::new().route("/ping", get(|| async { "pong" }));
+    // init env + logging
+    dotenv().ok();
+    tracing_subscriber::fmt::init();
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3030));
-    println!("Listening on {}", addr);
-    axum::Server::bind(&addr).serve(app.into_make_service()).await.unwrap();
+    let port: u16 = std::env::var("PORT")
+        .unwrap_or_else(|_| "3030".to_string())
+        .parse()
+        .expect("PORT must be a number");
+
+    let addr = SocketAddr::from(([127, 0, 0, 1], port));
+    let app = make_app();
+
+    tracing::info!("Listening on http://{}", addr);
+    axum::Server::bind(&addr)
+        .serve(app.into_make_service())
+        .await
+        .unwrap();
 }
