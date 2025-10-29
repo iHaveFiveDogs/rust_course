@@ -1,7 +1,7 @@
 // src/main.rs
+use axum_server::make_app;
 use dotenvy::dotenv;
-use std::net::SocketAddr;
-use axum_server::make_app; // crate name as in Cargo.toml
+use std::net::SocketAddr; // crate name as in Cargo.toml
 
 #[tokio::main]
 async fn main() {

@@ -9,6 +9,7 @@ pub use handlers::*; // optional re-export for tests
 
 pub fn make_app() -> Router {
     Router::new()
+        .route("/", get(|| async { "Axum server is running!" }))
         .route("/ping", get(ping))
         .route("/echo", post(echo))
         .route("/greet/:name", get(greet))
